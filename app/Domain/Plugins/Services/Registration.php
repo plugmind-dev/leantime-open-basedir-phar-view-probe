@@ -93,7 +93,7 @@ class Registration
         }
 
         // Check phar if no files found in regular directory (only when the on-disk archive exists)
-        if (empty($languageFiles) && file_exists($pharFile) && file_exists($pharPath)) {
+        if (empty($languageFiles) && is_file($pharFile) && is_dir($pharPath)) {
             $files = scandir($pharPath);
             foreach ($files as $file) {
                 if (substr($file, -4) === '.ini') {
@@ -121,8 +121,8 @@ class Registration
 
         $languagePath = "/Language/{$language}.ini";
 
-        // Check phar first, only after the on-disk archive exists (open_basedir hosts)
-        if (file_exists($pharFile) && file_exists($pharPath.$languagePath)) {
+        // Check phar first, only after the on-disk archive exists as a real file (open_basedir hosts)
+        if (is_file($pharFile) && file_exists($pharPath.$languagePath)) {
             $completeLanguagePath = $pharPath.$languagePath;
         } elseif (file_exists($regularPath.$languagePath)) {
             $completeLanguagePath = $regularPath.$languagePath;
@@ -154,7 +154,7 @@ class Registration
 
         // Stat the on-disk archive first: stat'ing a phar:// path for a missing archive
         // raises a spurious open_basedir error on hosts with open_basedir set.
-        if (file_exists($pharFile) && file_exists($pharPath)) {
+        if (is_file($pharFile) && file_exists($pharPath)) {
             return $pharPath;
         }
 
